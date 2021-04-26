@@ -164,10 +164,13 @@ class PDFContext(BaseContext):
                 url = attributes.get(AppKit.NSLinkAttributeName)
                 self._save()
                 if url is not None:
+                    runW, runH, ascent, _ = CoreText.CTRunGetTypographicBounds(ctRun, (0, 0), None, None, None)
+                    runPos = CoreText.CTRunGetPositions(ctRun, (0, 1), None)[0]
+                    typoBounds = AppKit.NSRect((x + originX + runPos.x, y + originY + runPos.y - ascent), (runW, runH + ascent))
                     self._save()
                     Quartz.CGContextSetTextPosition(self._pdfContext, x+originX, y+originY+baselineShift)
-                    urlBox = CoreText.CTRunGetImageBounds(ctRun, self._pdfContext, (0, 0))
-                    urlBox = Quartz.CGContextConvertRectToDeviceSpace(self._pdfContext, urlBox)
+                    Quartz.CGContextFillRect(self._pdfContext, typoBounds)
+                    urlBox = Quartz.CGContextConvertRectToDeviceSpace(self._pdfContext, typoBounds)
                     Quartz.CGPDFContextSetURLForRect(self._pdfContext, url, urlBox)
                     self._restore()
                 drawingMode = None
