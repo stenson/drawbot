@@ -169,7 +169,6 @@ class PDFContext(BaseContext):
                     typoBounds = AppKit.NSRect((x + originX + runPos.x, y + originY + runPos.y - ascent), (runW, runH + ascent))
                     self._save()
                     Quartz.CGContextSetTextPosition(self._pdfContext, x+originX, y+originY+baselineShift)
-                    Quartz.CGContextFillRect(self._pdfContext, typoBounds)
                     urlBox = Quartz.CGContextConvertRectToDeviceSpace(self._pdfContext, typoBounds)
                     Quartz.CGPDFContextSetURLForRect(self._pdfContext, url, urlBox)
                     self._restore()
